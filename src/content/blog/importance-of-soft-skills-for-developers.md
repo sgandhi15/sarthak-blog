@@ -30,11 +30,15 @@ In places like Newfoundland, we know the importance of community, adapting to ch
 
 Good communication is at the heart of any great project. Whether you're explaining a bug to your team, presenting a solution to a client, or even documenting your code, the ability to clearly articulate ideas is essential. It’s like explaining the perfect recipe—if you're too technical, people get lost. But when you break things down simply, everyone gets it. Clear communication helps you save time, avoid confusion, and make sure everyone’s on the same page.
 
+![Communication](../../assets//blog-imgs/soft-skills/luigi-communication.gif)
+
 ---
 
 ## 2. Teamwork: Because "Together" is Always Better
 
 In tech, you're rarely ever alone. **Teamwork** is what transforms individual contributions into something greater. Whether you're working with other developers, designers, or product managers, collaboration is key to building solid solutions. It's like building a cabin together—each person has a vital role, and when everyone pitches in, you get a stronger end product.
+
+![Teamwork](../../assets//blog-imgs/soft-skills/teamwork.gif)
 
 ---
 
@@ -42,11 +46,15 @@ In tech, you're rarely ever alone. **Teamwork** is what transforms individual co
 
 Time management in software development is crucial. Whether you're working on a project with tight deadlines or balancing multiple tasks, keeping track of your time can make or break a project. Use tools like Trello, Jira, or even a simple to-do list to stay on top of your work. It’s like managing a fishing trip: if you don’t plan ahead, things can get chaotic. But when you know when to cast your line, you catch the biggest fish.
 
+![Time Management](../../assets//blog-imgs/soft-skills/late-busy.gif)
+
 ---
 
 ## 4. Adaptability: Rolling with the Punches
 
 The tech world evolves faster than the weather in Newfoundland. One day you're working in one framework, the next you're learning something entirely new. Being **adaptable** is key to staying relevant. Embrace change, learn on the fly, and don’t be afraid to pivot when necessary. It’s like being prepared for a sudden rainstorm—stay flexible, and you’ll be able to weather any storm.
+
+![Adaptability](../../assets//blog-imgs/soft-skills/moocat-cat.gif)
 
 ---
 
@@ -54,11 +62,13 @@ The tech world evolves faster than the weather in Newfoundland. One day you're w
 
 Whether you're facing a tricky bug or a tight deadline, **emotional intelligence (EQ)** helps you navigate the ups and downs of software development. Managing your emotions and understanding others' perspectives can help keep the team morale high, even in stressful situations. It’s like keeping your cool when the server crashes or the power goes out—staying calm helps you find the solution, and keeps the team moving forward.
 
----
+## ![Emotional Intelligence](../../assets//blog-imgs/soft-skills/fine.gif)
 
 ## 6. Negotiation: Getting What You Want, Without the "Hard Sell"
 
 Negotiation isn’t just for salespeople. As a developer, you often find yourself negotiating timelines, features, or technical decisions. The key is to approach these conversations with respect and collaboration, not confrontation. It’s like navigating a community potluck—everyone has different tastes, but finding a way to make everyone happy is what makes the experience worthwhile.
+
+![Negotiation](../../assets//blog-imgs/soft-skills/money.gif)
 
 ---
 
