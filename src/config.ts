@@ -1,7 +1,7 @@
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
-  website: "https://astro-paper.pages.dev/", // replace this with your deployed domain
+  website: "https://sarthak.page/", // replace this with your deployed domain
   author: "Sarthak Gandhi",
   profile: "https://www.linkedin.com/in/sarthakgandhi1/",
   desc: "Software developer and a passionate learner",
@@ -34,7 +34,7 @@ export const LOGO_IMAGE = {
 export const SOCIALS: SocialObjects = [
   {
     name: "Github",
-    href: "https://github.com/sgandhi15/sarthak-blog",
+    href: "https://github.com/sgandhi15",
     linkTitle: `${SITE.title} on Github`,
     active: true,
   },
@@ -42,17 +42,17 @@ export const SOCIALS: SocialObjects = [
     name: "Facebook",
     href: "https://github.com/sgandhi15/sarthak-blog",
     linkTitle: `${SITE.title} on Facebook`,
-    active: true,
+    active: false,
   },
   {
     name: "Instagram",
     href: "https://github.com/sgandhi15/sarthak-blog",
     linkTitle: `${SITE.title} on Instagram`,
-    active: true,
+    active: false,
   },
   {
     name: "LinkedIn",
-    href: "https://github.com/sgandhi15/sarthak-blog",
+    href: "https://www.linkedin.com/in/sarthakgandhi1/",
     linkTitle: `${SITE.title} on LinkedIn`,
     active: true,
   },
@@ -64,9 +64,9 @@ export const SOCIALS: SocialObjects = [
   },
   {
     name: "X",
-    href: "https://github.com/sgandhi15/sarthak-blog",
+    href: "https://x.com/sarthak_xp",
     linkTitle: `${SITE.title} on X`,
-    active: false,
+    active: true,
   },
   {
     name: "Twitch",
