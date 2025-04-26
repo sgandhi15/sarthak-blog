@@ -1,0 +1,70 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Main from "@layouts/Main.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import { SITE } from "@config";
+
+interface Project {
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  image?: string;
+  github?: string;
+  live?: string;
+}
+// Sample projects data - you can replace this with your actual projects data
+const projects: Project[] = [
+  {
+    title: "Personal Blog",
+    description:
+      "A modern blog built with Astro, featuring a clean design and dark mode support.",
+    tags: ["Astro", "Tailwind CSS", "TypeScript"],
+    href: "https://github.com/yourusername/your-blog",
+    image: "https://picsum.photos/600/300",
+    github: "https://github.com/yourusername/your-blog",
+    live: "https://your-blog.com",
+  },
+  {
+    title: "E-commerce Platform",
+    description:
+      "A full-featured e-commerce platform with payment integration and inventory management.",
+    tags: ["React", "Node.js", "MongoDB"],
+    href: "https://github.com/yourusername/ecommerce",
+    image: "https://picsum.photos/600/300",
+    github: "https://github.com/yourusername/ecommerce",
+    live: "https://your-ecommerce.com",
+  },
+  {
+    title: "Task Manager",
+    description:
+      "A productivity app for managing tasks and projects with team collaboration features.",
+    tags: ["Vue.js", "Firebase", "PWA"],
+    href: "https://github.com/yourusername/task-manager",
+    image: "https://picsum.photos/600/300",
+    github: "https://github.com/yourusername/task-manager",
+    live: "https://your-task-manager.com",
+  },
+];
+---
+
+<Layout title={`Projects | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <Main
+    pageTitle="Projects"
+    pageDesc="A collection of my recent work and side projects."
+  >
+    <div class="lg:grid-cols-3 grid gap-6 sm:grid-cols-2">
+      {projects.map(project => <ProjectCard {...project} />)}
+    </div>
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  #main-content {
+    max-width: 80rem; /* Tailwind's max-w-6xl is 72rem, 7xl is 80rem */
+  }
+</style>
