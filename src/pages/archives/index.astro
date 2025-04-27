@@ -1,15 +1,14 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
-import Card from "@components/Card";
 import Footer from "@components/Footer.astro";
 import Header from "@components/Header.astro";
 import { SITE } from "@config";
 import Layout from "@layouts/Layout.astro";
 import Main from "@layouts/Main.astro";
-import ProjectCard from "@components/ProjectCard.astro";
+import ArchiveItem from "@components/ArchiveItem.astro";
 
-// ArchiveItem union type
-type ArchiveItem =
+// ArchiveEntry union type
+type ArchiveEntry =
   | { type: "blog"; pubDatetime: Date; data: CollectionEntry<"blog"> }
   | { type: "project"; pubDatetime: Date; data: CollectionEntry<"projects"> };
 
@@ -22,12 +21,14 @@ const posts = await getCollection("blog");
 const projects = await getCollection("projects");
 
 // Normalize blog posts and projects to a common structure
-const blogItems: ArchiveItem[] = posts.map((post: CollectionEntry<"blog">) => ({
-  type: "blog" as const,
-  pubDatetime: post.data.pubDatetime,
-  data: post,
-}));
-const projectItems: ArchiveItem[] = projects.map(
+const blogItems: ArchiveEntry[] = posts.map(
+  (post: CollectionEntry<"blog">) => ({
+    type: "blog" as const,
+    pubDatetime: post.data.pubDatetime,
+    data: post,
+  })
+);
+const projectItems: ArchiveEntry[] = projects.map(
   (project: CollectionEntry<"projects">) => ({
     type: "project" as const,
     pubDatetime: project.data.pubDatetime,
@@ -36,7 +37,7 @@ const projectItems: ArchiveItem[] = projects.map(
 );
 
 // Combine and sort all items by pubDatetime descending
-const allItems: ArchiveItem[] = [...blogItems, ...projectItems].sort(
+const allItems: ArchiveEntry[] = [...blogItems, ...projectItems].sort(
   (a, b) => b.pubDatetime.getTime() - a.pubDatetime.getTime()
 );
 
@@ -72,7 +73,7 @@ const groupedItems = allItems.reduce(
     acc[year][month].push(item);
     return acc;
   },
-  {} as Record<string, Record<string, ArchiveItem[]>>
+  {} as Record<string, Record<string, ArchiveEntry[]>>
 );
 
 // Sort years and months in descending order
@@ -105,7 +106,7 @@ const sortedYears = Object.keys(groupedItems).sort(
                       {groupedItems[year][month].length}
                     </sup>
                   </div>
-                  <div class="flex flex-1 list-none flex-col gap-6">
+                  <ul class="flex flex-1 list-none flex-col gap-6">
                     {groupedItems[year][month].map(item => (
                       <div class="relative">
                         <span
@@ -118,20 +119,14 @@ const sortedYears = Object.keys(groupedItems).sort(
                         >
                           {item.type === "blog" ? "Blog" : "Project"}
                         </span>
-                        {item.type === "blog" ? (
-                          <Card
-                            href={`/${item.type}s/${item.data.slug}/`}
-                            frontmatter={item.data.data}
-                          />
-                        ) : (
-                          <ProjectCard
-                            href={`/${item.type}s/${item.data.slug}/`}
-                            frontmatter={item.data.data}
-                          />
-                        )}
+                        <ArchiveItem
+                          href={`/${item.type}s/${item.data.slug}/`}
+                          frontmatter={item.data.data}
+                          type={item.type}
+                        />
                       </div>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               ))}
           </div>

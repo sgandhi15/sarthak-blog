@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  href: string;
+  frontmatter:
+    | CollectionEntry<"blog">["data"]
+    | CollectionEntry<"projects">["data"];
+  type: "blog" | "project";
+}
+
+const { href, frontmatter } = Astro.props;
+const { title, description, pubDatetime, modDatetime, tags } = frontmatter;
+---
+
+<li class="my-6">
+  <a
+    href={href}
+    class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+  >
+    {title}
+  </a>
+  <div class="mt-2 flex flex-wrap gap-2">
+    {
+      tags.map((tag: string) => (
+        <span class="text-skin-muted rounded bg-skin-card px-2 py-1 text-xs">
+          {tag}
+        </span>
+      ))
+    }
+  </div>
+  <p class="text-skin-muted mt-2 text-sm">{description}</p>
+  <div class="text-skin-muted mt-2 text-sm">
+    <time datetime={pubDatetime.toISOString()}>
+      {
+        new Date(pubDatetime).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      }
+    </time>
+    {
+      modDatetime && (
+        <span class="ml-2">
+          (Updated:{" "}
+          {new Date(modDatetime).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+          )
+        </span>
+      )
+    }
+  </div>
+</li>
