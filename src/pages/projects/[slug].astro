@@ -1,0 +1,104 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import { SITE } from "@config";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const projectEntries = await getCollection("projects");
+  return projectEntries.map((entry: CollectionEntry<"projects">) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { title, description, tags, liveUrl, repoUrl } = entry.data;
+---
+
+<Layout title={`${title} | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <main id="main-content">
+    <section class="mx-auto w-full max-w-3xl px-4 pb-12">
+      <h1 class="text-2xl font-semibold sm:text-3xl">{title}</h1>
+      <p class="mb-8 mt-4">{description}</p>
+
+      <div class="mb-8 flex flex-wrap gap-4">
+        {
+          liveUrl && (
+            <a
+              href={liveUrl}
+              class="inline-flex items-center gap-1 rounded bg-skin-accent px-4 py-1.5 text-sm text-skin-inverted hover:bg-skin-accent/90"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              View Live Demo
+            </a>
+          )
+        }
+        {
+          repoUrl && (
+            <a
+              href={repoUrl}
+              class="inline-flex items-center gap-1 rounded border border-skin-line px-4 py-1.5 text-sm hover:bg-skin-card-muted"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+              View Source Code
+            </a>
+          )
+        }
+      </div>
+
+      <div class="prose mx-auto">
+        <Content />
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-2">
+        {
+          tags.map((tag: string) => (
+            <a
+              href={`/tags/${tag.toLowerCase()}/`}
+              class="inline-block rounded bg-skin-card px-2 py-1 text-xs font-medium text-skin-base hover:bg-skin-card-muted"
+            >
+              {tag}
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

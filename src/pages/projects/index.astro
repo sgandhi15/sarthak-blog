@@ -1,22 +1,10 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
-import Footer from "@components/Footer.astro";
-import Main from "@layouts/Main.astro";
-import ProjectCard from "@components/ProjectCard.astro";
-import { SITE } from "@config";
-import { projects } from "../../data/projects";
+import Projects from "@layouts/Projects.astro";
+import { getCollection } from "astro:content";
+import getSortedProjects from "@utils/getSortedProjects";
+
+const projects = await getCollection("projects");
+const sortedProjects = getSortedProjects(projects);
 ---
 
-<Layout title={`Projects | ${SITE.title}`}>
-  <Header activeNav="projects" />
-  <Main
-    pageTitle="Projects"
-    pageDesc="A collection of my recent work and side projects."
-  >
-    <div class="lg:grid-cols-3 grid gap-6 sm:grid-cols-2">
-      {projects.map(project => <ProjectCard {...project} />)}
-    </div>
-  </Main>
-  <Footer />
-</Layout>
+<Projects projects={sortedProjects} />

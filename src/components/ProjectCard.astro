@@ -1,78 +1,72 @@
 ---
-// Removed: import TechIcon from "./TechIcon.astro";
+import type { CollectionEntry } from "astro:content";
 
-export interface Props {
-  title: string;
-  description: string;
-  tags: string[];
+interface Props {
   href: string;
-  image?: string;
-  github?: string;
-  stars?: number;
+  frontmatter: CollectionEntry<"projects">["data"];
+  secHeading?: boolean;
 }
 
-const { title, description, tags, href, image, github, stars } = Astro.props;
+const { href, frontmatter, secHeading = true } = Astro.props;
+const { title, description, pubDatetime, modDatetime, tags, ogImage } =
+  frontmatter;
+
+const Heading = secHeading ? "h2" : "h3";
 ---
 
-<div
-  class="overflow-hidden rounded-lg border border-skin-line bg-skin-card p-0 transition-all hover:border-skin-accent hover:bg-skin-card-muted"
+<article
+  class="flex flex-col rounded-lg border border-skin-line bg-skin-card p-4 transition-colors hover:border-skin-accent"
 >
+  <a
+    href={href}
+    class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+  >
+    <Heading class="text-lg font-medium decoration-dashed hover:underline">
+      {title}
+    </Heading>
+  </a>
+  <div class="mt-2 flex flex-wrap gap-2">
+    {
+      tags.map((tag: string) => (
+        <span class="text-skin-muted rounded bg-skin-card px-2 py-1 text-xs">
+          {tag}
+        </span>
+      ))
+    }
+  </div>
+  <p class="text-skin-muted mt-2 text-sm">{description}</p>
   {
-    image && (
-      <div class="relative aspect-video w-full overflow-hidden rounded-t-lg">
-        <img src={image} alt={title} class="h-full w-full object-cover" />
-      </div>
+    ogImage && (
+      <img
+        src={typeof ogImage === "string" ? ogImage : ogImage.src}
+        alt={title}
+        class="mt-4 rounded-lg"
+        loading="lazy"
+      />
     )
   }
-  <div class="px-6 py-5 transition-all hover:bg-skin-card-muted">
-    <div class="mb-2 flex items-center justify-between">
-      <a
-        href={href}
-        class="text-lg font-bold text-green-500 transition-colors hover:text-green-400"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {title}
-      </a>
-      <div class="flex items-center gap-2 text-sm text-skin-base/70">
-        {
-          stars && (
-            <span class="flex items-center gap-1">
-              <span>{stars}</span>
-              <svg class="h-4 w-4 fill-skin-base/70" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
-              </svg>
-            </span>
-          )
-        }
-        {
-          github && (
-            <a
-              href={github}
-              class="ml-2 transition hover:text-skin-accent"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="GitHub"
-            >
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.157-1.11-1.465-1.11-1.465-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.339-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.338 4.695-4.566 4.944.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.749 0 .267.18.577.688.48C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2z" />
-              </svg>
-            </a>
-          )
-        }
-      </div>
-    </div>
-    <p class="mb-4 text-[15px] leading-relaxed text-skin-base/90">
-      {description}
-    </p>
-    <div class="flex flex-wrap gap-2">
+  <div class="text-skin-muted mt-2 text-sm">
+    <time datetime={pubDatetime.toISOString()}>
       {
-        tags.map(tag => (
-          <span class="bg-skin-line/60 rounded px-3 py-1 text-xs font-medium text-skin-base/90">
-            {tag}
-          </span>
-        ))
+        new Date(pubDatetime).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
       }
-    </div>
+    </time>
+    {
+      modDatetime && (
+        <span class="ml-2">
+          (Updated:{" "}
+          {new Date(modDatetime).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+          )
+        </span>
+      )
+    }
   </div>
-</div>
+</article>

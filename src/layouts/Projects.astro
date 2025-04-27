@@ -1,0 +1,41 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import { SITE } from "@config";
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects = [] } = Astro.props;
+console.log("Projects layout - projects:", projects);
+---
+
+<Layout title={`Projects | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <Main
+    pageTitle="Projects"
+    pageDesc="Here are some of my projects. You can find more on my GitHub."
+  >
+    {
+      projects.length > 0 ? (
+        <div class="grid gap-6 sm:grid-cols-2">
+          {projects.map(({ data, slug }: CollectionEntry<"projects">) => (
+            <ProjectCard
+              href={`/projects/${slug}/`}
+              frontmatter={data}
+              secHeading={false}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="text-center text-lg">No projects found.</p>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>

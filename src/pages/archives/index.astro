@@ -6,40 +6,38 @@ import Header from "@components/Header.astro";
 import { SITE } from "@config";
 import Layout from "@layouts/Layout.astro";
 import Main from "@layouts/Main.astro";
-import { projects } from "../../data/projects";
-import type { Project } from "../../data/projects";
+import ProjectCard from "@components/ProjectCard.astro";
 
 // ArchiveItem union type
 type ArchiveItem =
-  | { type: "blog"; pubDatetime: string; data: CollectionEntry<"blog"> }
-  | { type: "project"; pubDatetime: string; data: Project };
+  | { type: "blog"; pubDatetime: Date; data: CollectionEntry<"blog"> }
+  | { type: "project"; pubDatetime: Date; data: CollectionEntry<"projects"> };
 
 // Redirect to 404 page if `showArchives` config is false
 if (!SITE.showArchives) {
   return Astro.redirect("/404");
 }
 
-const posts = await getCollection(
-  "blog",
-  (post: CollectionEntry<"blog">) => !post.data.draft
-);
+const posts = await getCollection("blog");
+const projects = await getCollection("projects");
 
 // Normalize blog posts and projects to a common structure
 const blogItems: ArchiveItem[] = posts.map((post: CollectionEntry<"blog">) => ({
-  type: "blog",
+  type: "blog" as const,
   pubDatetime: post.data.pubDatetime,
   data: post,
 }));
-const projectItems: ArchiveItem[] = projects.map(project => ({
-  type: "project",
-  pubDatetime: project.pubDatetime,
-  data: project,
-}));
+const projectItems: ArchiveItem[] = projects.map(
+  (project: CollectionEntry<"projects">) => ({
+    type: "project" as const,
+    pubDatetime: project.data.pubDatetime,
+    data: project,
+  })
+);
 
 // Combine and sort all items by pubDatetime descending
 const allItems: ArchiveItem[] = [...blogItems, ...projectItems].sort(
-  (a, b) =>
-    new Date(b.pubDatetime).getTime() - new Date(a.pubDatetime).getTime()
+  (a, b) => b.pubDatetime.getTime() - a.pubDatetime.getTime()
 );
 
 // Month map for display
@@ -58,18 +56,28 @@ const MonthMap: Record<string, string> = {
   "11": "December",
 };
 
-// Group by year, then by month
-const groupedByYearMonth: Record<string, Record<string, ArchiveItem[]>> = {};
-for (const item of allItems) {
-  const date = new Date(item.pubDatetime);
-  const year = date.getFullYear().toString();
-  const month = date.getMonth().toString();
-  if (!groupedByYearMonth[year]) groupedByYearMonth[year] = {};
-  if (!groupedByYearMonth[year][month]) groupedByYearMonth[year][month] = [];
-  groupedByYearMonth[year][month].push(item);
-}
-const years = Object.keys(groupedByYearMonth).sort(
-  (a, b) => Number(b) - Number(a)
+// Group items by year and month
+const groupedItems = allItems.reduce(
+  (acc, item) => {
+    const date = new Date(item.pubDatetime);
+    const year = date.getFullYear().toString();
+    const month = date.getMonth().toString();
+
+    if (!acc[year]) {
+      acc[year] = {};
+    }
+    if (!acc[year][month]) {
+      acc[year][month] = [];
+    }
+    acc[year][month].push(item);
+    return acc;
+  },
+  {} as Record<string, Record<string, ArchiveItem[]>>
+);
+
+// Sort years and months in descending order
+const sortedYears = Object.keys(groupedItems).sort(
+  (a, b) => parseInt(b) - parseInt(a)
 );
 ---
 
@@ -77,28 +85,28 @@ const years = Object.keys(groupedByYearMonth).sort(
   <Header activeNav="archives" />
   <Main pageTitle="Archives" pageDesc="All the articles and projects by year.">
     {
-      years.map(year => (
+      sortedYears.map(year => (
         <div>
           <span class="text-2xl font-bold">{year}</span>
           <sup class="text-sm">
-            {Object.values(groupedByYearMonth[year]).reduce(
+            {Object.values(groupedItems[year]).reduce(
               (acc, arr) => acc + arr.length,
               0
             )}
           </sup>
           <div class="mt-4 flex flex-col gap-10">
-            {Object.keys(groupedByYearMonth[year])
+            {Object.keys(groupedItems[year])
               .sort((a, b) => Number(b) - Number(a))
               .map(month => (
                 <div class="flex flex-col sm:flex-row sm:gap-x-10">
                   <div class="mb-2 min-w-36 text-right text-lg font-semibold text-skin-accent sm:my-6 sm:pr-10">
                     {MonthMap[month]}
                     <sup class="ml-1 text-xs text-skin-base/60">
-                      {groupedByYearMonth[year][month].length}
+                      {groupedItems[year][month].length}
                     </sup>
                   </div>
                   <div class="flex flex-1 list-none flex-col gap-6">
-                    {groupedByYearMonth[year][month].map(item => (
+                    {groupedItems[year][month].map(item => (
                       <div class="relative">
                         <span
                           class={
@@ -110,16 +118,17 @@ const years = Object.keys(groupedByYearMonth).sort(
                         >
                           {item.type === "blog" ? "Blog" : "Project"}
                         </span>
-                        <Card
-                          href={
-                            item.type === "blog"
-                              ? `/posts/${item.data.slug}`
-                              : item.data.href
-                          }
-                          frontmatter={
-                            item.type === "blog" ? item.data.data : item.data
-                          }
-                        />
+                        {item.type === "blog" ? (
+                          <Card
+                            href={`/${item.type}s/${item.data.slug}/`}
+                            frontmatter={item.data.data}
+                          />
+                        ) : (
+                          <ProjectCard
+                            href={`/${item.type}s/${item.data.slug}/`}
+                            frontmatter={item.data.data}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
