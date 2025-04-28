@@ -7,7 +7,12 @@ interface DatetimesProps {
 }
 
 interface EditPostProps {
-  editPost?: CollectionEntry<"blog">["data"]["editPost"];
+  editPost?: {
+    text?: string;
+    URL?: string;
+    disabled?: boolean;
+    appendFilePath?: boolean;
+  };
   postId?: CollectionEntry<"blog">["id"];
 }
 
@@ -83,7 +88,7 @@ const FormattedDatetime = ({ pubDatetime, modDatetime }: DatetimesProps) => {
 };
 
 const EditPost = ({ editPost, postId }: EditPostProps) => {
-  let editPostUrl = editPost?.url ?? SITE?.editPost?.url ?? "";
+  let editPostUrl = editPost?.URL ?? SITE?.editPost?.url ?? "";
   const showEditPost = !editPost?.disabled && editPostUrl.length > 0;
   const appendFilePath =
     editPost?.appendFilePath ?? SITE?.editPost?.appendFilePath ?? false;

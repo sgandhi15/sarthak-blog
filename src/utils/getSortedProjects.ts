@@ -1,14 +1,15 @@
 import type { CollectionEntry } from "astro:content";
 
 const getSortedProjects = (projects: CollectionEntry<"projects">[]) => {
-  return projects.sort((a, b) => {
-    const dateA = a.data.modDatetime ?? a.data.pubDatetime ?? new Date(0);
-    const dateB = b.data.modDatetime ?? b.data.pubDatetime ?? new Date(0);
-    return (
-      Math.floor(new Date(dateB).getTime() / 1000) -
-      Math.floor(new Date(dateA).getTime() / 1000)
-    );
-  });
+  return projects.sort(
+    (a, b) =>
+      Math.floor(
+        new Date(b.data.modDatetime ?? b.data.pubDatetime).getTime() / 1000
+      ) -
+      Math.floor(
+        new Date(a.data.modDatetime ?? a.data.pubDatetime).getTime() / 1000
+      )
+  );
 };
 
 export default getSortedProjects;

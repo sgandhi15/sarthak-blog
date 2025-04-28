@@ -15,58 +15,62 @@ const Heading = secHeading ? "h2" : "h3";
 ---
 
 <article
-  class="flex flex-col rounded-lg border border-skin-line bg-skin-card p-4 transition-colors hover:border-skin-accent"
+  class="flex flex-col rounded-lg border border-skin-line bg-skin-card p-4 transition-colors hover:border-skin-accent sm:flex-row sm:gap-6"
 >
-  <a
-    href={href}
-    class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
-  >
-    <Heading class="text-lg font-medium decoration-dashed hover:underline">
-      {title}
-    </Heading>
-  </a>
-  <div class="mt-2 flex flex-wrap gap-2">
-    {
-      tags.map((tag: string) => (
-        <span class="text-skin-muted rounded bg-skin-card px-2 py-1 text-xs">
-          {tag}
-        </span>
-      ))
-    }
-  </div>
-  <p class="text-skin-muted mt-2 text-sm">{description}</p>
   {
     ogImage && (
-      <img
-        src={typeof ogImage === "string" ? ogImage : ogImage.src}
-        alt={title}
-        class="mt-4 rounded-lg"
-        loading="lazy"
-      />
+      <div class="mb-4 sm:mb-0 sm:w-1/3">
+        <img
+          src={typeof ogImage === "string" ? ogImage : ogImage.src}
+          alt={title}
+          class="h-full w-full rounded-lg object-cover"
+          loading="lazy"
+        />
+      </div>
     )
   }
-  <div class="text-skin-muted mt-2 text-sm">
-    <time datetime={pubDatetime.toISOString()}>
+  <div class={`flex flex-col ${ogImage ? "sm:w-2/3" : "w-full"}`}>
+    <a
+      href={href}
+      class="inline-block text-lg font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+    >
+      <Heading class="text-lg font-medium decoration-dashed hover:underline">
+        {title}
+      </Heading>
+    </a>
+    <div class="mt-2 flex flex-wrap gap-2">
       {
-        new Date(pubDatetime).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
+        tags.map((tag: string) => (
+          <span class="text-skin-muted rounded bg-skin-card px-2 py-1 text-xs">
+            {tag}
+          </span>
+        ))
       }
-    </time>
-    {
-      modDatetime && (
-        <span class="ml-2">
-          (Updated:{" "}
-          {new Date(modDatetime).toLocaleDateString("en-US", {
+    </div>
+    <p class="text-skin-muted mt-2 text-sm">{description}</p>
+    <div class="text-skin-muted mt-2 text-sm">
+      <time datetime={pubDatetime.toISOString()}>
+        {
+          new Date(pubDatetime).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
             day: "numeric",
-          })}
-          )
-        </span>
-      )
-    }
+          })
+        }
+      </time>
+      {
+        modDatetime && (
+          <span class="ml-2">
+            (Updated:{" "}
+            {new Date(modDatetime).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+            )
+          </span>
+        )
+      }
+    </div>
   </div>
 </article>

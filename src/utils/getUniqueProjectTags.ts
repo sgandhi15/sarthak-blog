@@ -7,10 +7,8 @@ interface Tag {
 }
 
 const getUniqueProjectTags = (projects: CollectionEntry<"projects">[]) => {
-  console.log("Projects:", projects);
   const tags: Tag[] = projects
     .flatMap(project => {
-      console.log("Project tags:", project.data.tags);
       return project.data.tags || [];
     })
     .map(tag => ({ tag: slugifyStr(tag), tagName: tag }))
@@ -19,7 +17,6 @@ const getUniqueProjectTags = (projects: CollectionEntry<"projects">[]) => {
         self.findIndex(tag => tag.tag === value.tag) === index
     )
     .sort((tagA, tagB) => tagA.tag.localeCompare(tagB.tag));
-  console.log("Final tags:", tags);
   return tags;
 };
 
