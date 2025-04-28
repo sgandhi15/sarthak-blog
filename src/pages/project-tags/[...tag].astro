@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import { SITE } from "@config";
+import ProjectCard from "@components/ProjectCard.astro";
+import { slugifyStr } from "@utils/slugify";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  const uniqueTags = new Set();
+  projects.forEach(project => {
+    project.data.tags.map((tag: string) => uniqueTags.add(slugifyStr(tag)));
+  });
+
+  return Array.from(uniqueTags).map(tag => {
+    const filteredProjects = projects.filter(project =>
+      project.data.tags
+        .map((tag: string) => slugifyStr(tag))
+        .includes(tag as string)
+    );
+
+    return {
+      params: { tag },
+      props: { projects: filteredProjects, tag },
+    };
+  });
+}
+
+const { projects, tag } = Astro.props;
+---
+
+<Layout title={`${tag} | Project Tags | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <Main pageTitle={`Projects tagged with "${tag}"`}>
+    <div class="lg:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2">
+      {
+        projects.map(project => (
+          <ProjectCard
+            href={`/projects/${project.slug}/`}
+            frontmatter={project.data}
+          />
+        ))
+      }
+    </div>
+  </Main>
+  <Footer />
+</Layout>

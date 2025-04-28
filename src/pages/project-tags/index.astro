@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import ProjectTag from "@components/ProjectTag.astro";
+import { SITE } from "@config";
+
+const projects = await getCollection("projects");
+const allTags = projects.flatMap(project => project.data.tags || []);
+const uniqueTags = [...new Set(allTags)].map(tag => ({
+  tag: tag.toLowerCase().replace(/\s+/g, "-"),
+  tagName: tag,
+}));
+
+// Debug information
+const debugInfo = {
+  totalProjects: projects.length,
+  projectsWithTags: projects.filter(p => p.data.tags && p.data.tags.length > 0)
+    .length,
+  allTags: allTags,
+  uniqueTags: uniqueTags,
+  projectDetails: projects.map(p => ({
+    title: p.data.title,
+    tags: p.data.tags,
+  })),
+};
+---
+
+<Layout title={`Project Tags | ${SITE.title}`}>
+  <Header activeNav="projects" />
+  <Main pageTitle="Project Tags" pageDesc="All the tags used in projects.">
+    <!-- Debug Section -->
+    <div class="mb-8 rounded-lg bg-skin-card p-4">
+      <h2 class="mb-4 text-lg font-semibold">Debug Information:</h2>
+      <pre
+        class="whitespace-pre-wrap text-sm">{JSON.stringify(debugInfo, null, 2)}</pre>
+    </div>
+
+    <!-- Tags Section -->
+    <div>
+      <h2 class="mb-4 text-lg font-semibold">Project Tags:</h2>
+      <ul>
+        {uniqueTags.map(({ tag }) => <ProjectTag {tag} size="lg" />)}
+      </ul>
+    </div>
+  </Main>
+  <Footer />
+</Layout>

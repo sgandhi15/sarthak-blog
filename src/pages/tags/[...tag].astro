@@ -1,0 +1,79 @@
+---
+import { getCollection } from "astro:content";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import { SITE } from "@config";
+import PostCard from "@components/PostCard.astro";
+import ProjectCard from "@components/ProjectCard.astro";
+import { slugifyStr } from "@utils/slugify";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const projects = await getCollection("projects");
+
+  // Get all unique tags from both posts and projects
+  const allTags = new Set();
+  posts.forEach(post => {
+    post.data.tags.map((tag: string) => allTags.add(slugifyStr(tag)));
+  });
+  projects.forEach(project => {
+    project.data.tags.map((tag: string) => allTags.add(slugifyStr(tag)));
+  });
+
+  return Array.from(allTags).map(tag => {
+    const filteredPosts = posts.filter(post =>
+      post.data.tags
+        .map((tag: string) => slugifyStr(tag))
+        .includes(tag as string)
+    );
+    const filteredProjects = projects.filter(project =>
+      project.data.tags
+        .map((tag: string) => slugifyStr(tag))
+        .includes(tag as string)
+    );
+
+    return {
+      params: { tag },
+      props: { posts: filteredPosts, projects: filteredProjects, tag },
+    };
+  });
+}
+
+const { posts, projects, tag } = Astro.props;
+---
+
+<Layout title={`${tag} | Tags | ${SITE.title}`}>
+  <Header activeNav="tags" />
+  <Main pageTitle={`Content tagged with "${tag}"`}>
+    {
+      posts.length > 0 && (
+        <div class="mb-8">
+          <h2 class="mb-4 text-lg font-semibold">Blog Posts</h2>
+          <div class="lg:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {posts.map(post => (
+              <PostCard href={`/posts/${post.slug}/`} frontmatter={post.data} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    {
+      projects.length > 0 && (
+        <div>
+          <h2 class="mb-4 text-lg font-semibold">Projects</h2>
+          <div class="lg:grid-cols-3 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {projects.map(project => (
+              <ProjectCard
+                href={`/projects/${project.slug}/`}
+                frontmatter={project.data}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>

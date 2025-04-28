@@ -6,8 +6,9 @@ import type { CollectionEntry } from "astro:content";
 export type SearchItem = {
   title: string;
   description: string;
-  data: CollectionEntry<"blog">["data"];
+  data: CollectionEntry<"blog">["data"] | CollectionEntry<"projects">["data"];
   slug: string;
+  type: "blog" | "project";
 };
 
 interface Props {
@@ -67,9 +68,9 @@ export default function SearchBar({ searchList }: Props) {
       searchParams.set("q", inputVal);
       const newRelativePathQuery =
         window.location.pathname + "?" + searchParams.toString();
-      history.replaceState(history.state, "", newRelativePathQuery);
+      history.pushState(null, "", newRelativePathQuery);
     } else {
-      history.replaceState(history.state, "", window.location.pathname);
+      history.pushState(null, "", window.location.pathname);
     }
   }, [inputVal]);
 
@@ -90,14 +91,14 @@ export default function SearchBar({ searchList }: Props) {
           <span className="sr-only">Search</span>
         </span>
         <input
-          className="block w-full rounded border border-skin-fill/40 bg-skin-fill py-3 pl-10 pr-3 placeholder:italic focus:border-skin-accent focus:outline-none"
+          className="block w-full rounded border border-skin-line bg-skin-fill py-3 pl-10 pr-3 placeholder:italic placeholder:text-opacity-75 focus:border-skin-accent focus:outline-none"
           placeholder="Search for anything..."
           type="text"
           name="search"
           value={inputVal}
           onChange={handleChange}
           autoComplete="off"
-          // autoFocus
+          autoFocus
           ref={inputRef}
         />
       </label>
@@ -105,7 +106,7 @@ export default function SearchBar({ searchList }: Props) {
       {inputVal.length > 1 && (
         <div className="mt-8">
           Found {searchResults?.length}
-          {searchResults?.length && searchResults?.length === 1
+          {searchResults?.length && searchResults.length === 1
             ? " result"
             : " results"}{" "}
           for '{inputVal}'
@@ -113,14 +114,15 @@ export default function SearchBar({ searchList }: Props) {
       )}
 
       <ul>
-        {searchResults &&
-          searchResults.map(({ item, refIndex }) => (
+        {searchResults?.map(({ item, refIndex }) => (
+          <li key={refIndex} className="my-6">
             <Card
-              href={`/posts/${item.slug}/`}
+              href={`/${item.type}s/${item.slug}/`}
               frontmatter={item.data}
-              key={`${refIndex}-${item.slug}`}
+              secHeading={true}
             />
-          ))}
+          </li>
+        ))}
       </ul>
     </>
   );

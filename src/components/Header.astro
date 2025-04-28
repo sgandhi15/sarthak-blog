@@ -74,6 +74,7 @@ const { activeNav } = Astro.props;
           <li class="col-span-2 flex items-center justify-center">
             <a
               href="/posts/"
+              rel="prefetch"
               class={`w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1 ${activeNav === "posts" ? "underline decoration-wavy decoration-2 underline-offset-4" : ""}`}
             >
               Posts
@@ -82,6 +83,7 @@ const { activeNav } = Astro.props;
           <li class="col-span-2 flex items-center justify-center">
             <a
               href="/tags/"
+              rel="prefetch"
               class={`w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1 ${activeNav === "tags" ? "underline decoration-wavy decoration-2 underline-offset-4" : ""}`}
             >
               Tags
@@ -90,6 +92,7 @@ const { activeNav } = Astro.props;
           <li class="col-span-2 flex items-center justify-center">
             <a
               href="/projects/"
+              rel="prefetch"
               class={`w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1 ${activeNav === "projects" ? "underline decoration-wavy decoration-2 underline-offset-4" : ""}`}
             >
               Projects

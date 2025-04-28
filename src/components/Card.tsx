@@ -4,7 +4,9 @@ import type { CollectionEntry } from "astro:content";
 
 export interface Props {
   href?: string;
-  frontmatter: CollectionEntry<"blog">["data"];
+  frontmatter:
+    | CollectionEntry<"blog">["data"]
+    | CollectionEntry<"projects">["data"];
   secHeading?: boolean;
 }
 

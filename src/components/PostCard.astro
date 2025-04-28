@@ -1,0 +1,45 @@
+---
+import Datetime from "./Datetime";
+import Tag from "./Tag.astro";
+
+interface Props {
+  href: string;
+  frontmatter: {
+    title: string;
+    description: string;
+    pubDatetime: Date;
+    modDatetime?: Date;
+    tags?: string[];
+  };
+}
+
+const { href, frontmatter } = Astro.props;
+const { title, description, pubDatetime, modDatetime, tags } = frontmatter;
+---
+
+<article class="flex flex-col gap-2">
+  <a
+    href={href}
+    class="text-xl font-medium text-skin-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
+  >
+    <h3 class="text-xl font-medium decoration-dashed hover:underline">
+      {title}
+    </h3>
+  </a>
+
+  <div class="flex gap-2">
+    <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} />
+  </div>
+
+  <p class="text-sm text-skin-base/60">{description}</p>
+
+  {
+    tags && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map(tag => (
+          <Tag tag={tag} />
+        ))}
+      </div>
+    )
+  }
+</article>
