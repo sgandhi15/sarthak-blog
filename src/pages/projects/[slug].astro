@@ -4,6 +4,10 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import { SITE } from "@config";
 import { getCollection, type CollectionEntry } from "astro:content";
+import Tag from "@components/Tag.astro";
+import Datetime from "@components/Datetime";
+import ShareLinks from "@components/ShareLinks.astro";
+import { slugifyStr } from "@utils/slugify";
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection("projects");
@@ -19,86 +23,129 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const { title, description, tags, liveUrl, repoUrl } = entry.data;
+const {
+  title,
+  description,
+  tags,
+  pubDatetime,
+  modDatetime,
+  liveUrl,
+  repoUrl,
+  ogImage,
+} = entry.data;
+
+const ogImageUrl = typeof ogImage === "string" ? ogImage : ogImage?.src;
+const ogUrl = new URL(
+  ogImageUrl ?? `/projects/${slugifyStr(title)}.png`,
+  Astro.url.origin
+).href;
+
+const layoutProps = {
+  title: `${title} | ${SITE.title}`,
+  description,
+  pubDatetime,
+  modDatetime,
+  ogImage: ogUrl,
+  scrollSmooth: true,
+};
 ---
 
-<Layout title={`${title} | ${SITE.title}`}>
+<Layout {...layoutProps}>
   <Header activeNav="projects" />
-  <main id="main-content">
-    <section class="mx-auto w-full max-w-3xl px-4 pb-12">
-      <h1 class="text-2xl font-semibold sm:text-3xl">{title}</h1>
-      <p class="mb-8 mt-4">{description}</p>
 
-      <div class="mb-8 flex flex-wrap gap-4">
-        {
-          liveUrl && (
-            <a
-              href={liveUrl}
-              class="inline-flex items-center gap-1 rounded bg-skin-accent px-4 py-1.5 text-sm text-skin-inverted hover:bg-skin-accent/90"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-              View Live Demo
-            </a>
-          )
-        }
-        {
-          repoUrl && (
-            <a
-              href={repoUrl}
-              class="inline-flex items-center gap-1 rounded border border-skin-line px-4 py-1.5 text-sm hover:bg-skin-card-muted"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-              </svg>
-              View Source Code
-            </a>
-          )
-        }
-      </div>
+  <div class="mx-auto flex w-full max-w-3xl justify-start px-2">
+    <button
+      class="focus-outline mb-2 mt-8 flex hover:opacity-75"
+      onclick="(() => (history.length === 1) ? window.location = '/projects' : history.back())()"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg"
+        ><path
+          d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"
+        ></path>
+      </svg><span>Go back</span>
+    </button>
+  </div>
 
-      <div class="prose mx-auto">
-        <Content />
-      </div>
+  <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-12">
+    <h1
+      transition:name={slugifyStr(title)}
+      class="inline-block text-2xl font-semibold text-skin-accent"
+    >
+      {title}
+    </h1>
+    <p class="mt-4 text-lg text-skin-base/80">{description}</p>
 
-      <div class="mt-8 flex flex-wrap gap-2">
-        {
-          tags.map((tag: string) => (
-            <a
-              href={`/tags/${tag.toLowerCase()}/`}
-              class="inline-block rounded bg-skin-card px-2 py-1 text-xs font-medium text-skin-base hover:bg-skin-card-muted"
+    <Datetime
+      pubDatetime={pubDatetime}
+      modDatetime={modDatetime}
+      size="lg"
+      className="my-2"
+    />
+
+    <div class="mb-8 mt-4 flex flex-wrap gap-4">
+      {
+        liveUrl && (
+          <a
+            href={liveUrl}
+            class="inline-flex items-center gap-1 rounded bg-skin-accent px-4 py-1.5 text-sm text-skin-inverted hover:bg-skin-accent/90"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-              {tag}
-            </a>
-          ))
-        }
-      </div>
-    </section>
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            Live Demo
+          </a>
+        )
+      }
+      {
+        repoUrl && (
+          <a
+            href={repoUrl}
+            class="inline-flex items-center gap-1 rounded border border-skin-line bg-skin-fill px-4 py-1.5 text-sm hover:bg-skin-card-muted"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+            </svg>
+            Source Code
+          </a>
+        )
+      }
+    </div>
+
+    <article id="article" class="prose mx-auto mt-8 max-w-3xl">
+      <Content />
+    </article>
+
+    <ul class="my-8">
+      {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
+    </ul>
+
+    <div class="mt-12">
+      <ShareLinks title={title} />
+    </div>
   </main>
   <Footer />
 </Layout>
