@@ -1,3 +1,20 @@
+---
+title: "Sarthak Gandhi - Professional Portfolio"
+author: "Sarthak Gandhi"
+pubDatetime: 2025-05-02T00:00:00Z
+postSlug: "sarthak-portfolio"
+featured: false
+draft: false
+tags:
+  - "React"
+  - "TypeScript"
+  - "Tailwind CSS"
+  - "Shadcn UI"
+  - "Astro"
+  - "Docker"
+description: "A personal portfolio and blog website built with modern web technologies to showcase projects and share knowledge about software development."
+---
+
 # Sarthak's Blog
 
 A personal portfolio and blog website built with modern web technologies to showcase projects and share knowledge about software development.
@@ -71,5 +88,3 @@ I'm Sarthak Gandhi, a software developer passionate about creating efficient, us
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-Built by [Sarthak Gandhi](https://www.linkedin.com/in/sarthakgandhi1/)
